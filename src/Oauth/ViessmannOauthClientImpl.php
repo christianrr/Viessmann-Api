@@ -76,20 +76,23 @@ class ViessmannOauthClientImpl implements ViessmannOauthClient
         $authorizeURL = self::HTTPS_IAM_VIESSMANN_COM_IDP_V_1_AUTHORIZE;
         $callback_uri = self::VICARE_OAUTH_CALLBACK_EVEREST;
         $url = "$authorizeURL?client_id=$client_id&scope=openid&redirect_uri=$callback_uri&response_type=code";
-        $header = array("Content-Type: application/x-www-form-urlencoded");
-        $curloptions = array(
-            CURLOPT_URL => $url,
-            CURLOPT_HTTPHEADER => $header,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_USERPWD => "$this->user:$this->pwd",
-            CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
-            CURLOPT_POST => true,
-        );
-        $curl = curl_init();
-        curl_setopt_array($curl, $curloptions);
-        $response = curl_exec($curl);
-        curl_close($curl);
+        // $header = array("Content-Type: application/x-www-form-urlencoded");
+        // $curloptions = array(
+            // CURLOPT_URL => $url,
+            // CURLOPT_HTTPHEADER => $header,
+            // CURLOPT_SSL_VERIFYPEER => false,
+            // CURLOPT_RETURNTRANSFER => true,
+            // CURLOPT_USERPWD => "$this->user:$this->pwd",
+            // CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+            // CURLOPT_POST => true,
+        // );
+        // $curl = curl_init();
+        // curl_setopt_array($curl, $curloptions);
+        // $response = curl_exec($curl);
+        // curl_close($curl);
+		$curl_url = "curl -u '$this->user:$this->pwd' '$url'";
+		$response = shell_exec($curl_url);
+		echo $curl_url . " Response: " . $response;
         $matches = array();
         $pattern = '/code=(.*)"/';
         if (preg_match_all($pattern, $response, $matches)) {
